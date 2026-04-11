@@ -1,0 +1,57 @@
+# ==========================================
+# Haskell / Cabal
+# ==========================================
+
+# Diretório de build do Cabal moderno (v2-build / v3-build)
+dist-newstyle/
+
+# Diretório de build do Cabal antigo (legacy)
+dist/
+
+# Arquivos de ambiente locais do GHC (gerados pelo Cabal)
+.ghc.environment.*
+
+# Configurações locais do Cabal (específicas da sua máquina)
+cabal.project.local
+cabal.project.local~
+
+# Arquivos de sandbox do Cabal antigo (caso use alguma versão velha)
+.cabal-sandbox/
+cabal.sandbox.config
+
+# ==========================================
+# Outras ferramentas Haskell
+# ==========================================
+
+# Diretório de build do Stack (outra ferramenta bem comum, bom já ignorar)
+.stack-work/
+
+# Arquivos do Haskell Language Server (HLS) - gera informações para sua IDE
+.hie/
+
+# Arquivos compilados soltos (caso você rode 'ghc Arquivo.hs' diretamente)
+*.o
+*.hi
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+
+# ==========================================
+# Editores e Sistema Operacional
+# ==========================================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Arquivos temporários de editores (Vim, Emacs, etc)
+*~
+*.swp
+*.swo
+
+# Pastas de configuração local de IDEs (opcional, remova se quiser versionar configurações do VSCode, por exemplo)
+.vscode/
+.idea/
