@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
 
-import Web.Scotty(scotty, post, jsonData, json, ActionM, status)
+import Web.Scotty(scotty, post, jsonData, json, ActionM, status, middleware)
 import Data.Text (Text, unpack, toLower, pack)
 import Data.Text.Encoding(decodeUtf8)
 import Data.CaseInsensitive(original)
@@ -52,6 +52,7 @@ filterSecurityHeadersPresent = filter (\(h, _) ->  h `elem` securityHeaders)
 
 main :: IO ()
 main = scotty 3000 $ do
+    middleware simpleCors
 
     post "/analisador" $ do
         receivedData <- jsonData
