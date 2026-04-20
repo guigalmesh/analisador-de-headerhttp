@@ -75,7 +75,9 @@ executable analisador-de-headerhttp
         http-conduit,
         case-insensitive,
         bytestring,
-        http-types
+        http-types,
+        containers,
+        wai-cors
 
     ghc-options: -threaded
     -- Directories containing source files.
