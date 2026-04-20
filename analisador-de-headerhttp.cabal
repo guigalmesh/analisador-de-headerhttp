@@ -67,7 +67,7 @@ executable analisador-de-headerhttp
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    
+    build-depends:
         base ^>=4.18.3.0,
         scotty,
         aeson,
@@ -77,7 +77,8 @@ executable analisador-de-headerhttp
         bytestring,
         http-types,
         containers,
-        wai-cors
+        wai-cors,
+        wai
 
     ghc-options: -threaded
     -- Directories containing source files.
