@@ -18,6 +18,10 @@ newtype TargetURL =
     deriving (Show, Generic)
 instance FromJSON TargetURL
 
+-- Critical: previne a execução direta do código ou interceptação da sessão
+-- Recommended: atua como defesa em profundidade ou previne vazamento de dados
+-- Other: obsoleto, estritamente informativo ou redundante
+
 data Severity = Critical | Recommended | Other
     deriving (Show, Generic, Eq)
 instance ToJSON Severity
