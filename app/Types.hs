@@ -7,6 +7,7 @@ module Types
     , HeaderAnalysis(..)
     , SecurityReport(..)
     , ErrorReport(..)
+    , HistoryPayload(..)
     ) where
 
 import Data.Text (Text)
@@ -50,3 +51,9 @@ data ErrorReport = ErrorReport
     , details :: Text
     } deriving (Show, Generic)
 instance ToJSON ErrorReport
+
+data HistoryPayload = HistoryPayload
+    { scannedURL :: String
+    , report :: String
+    } deriving (Show, Generic)
+instance FromJSON HistoryPayload

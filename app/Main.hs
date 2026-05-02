@@ -1,6 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-import Web.Scotty(scotty, post, jsonData, json, ActionM, middleware)
+
+import Database.SQLite.Simple
+import Data.Time.Clock (getCurrentTime)
+import Web.Scotty(scotty, post, jsonData, json, ActionM, middleware, text, get)
 import qualified Web.Scotty as Scotty
 import Data.Text (Text, unpack, toLower, pack)
 import Data.Text.Encoding(decodeUtf8)
@@ -15,7 +18,31 @@ import Network.HTTP.Types.Status(status500)
 import Network.Wai.Middleware.Cors(cors, simpleCorsResourcePolicy, corsRequestHeaders)
 import Network.Wai (Middleware)
 import Types
+    ( ErrorReport(ErrorReport),
+      SecurityReport(SecurityReport, results),
+      TargetURL(url),
+      HistoryPayload(scannedURL, report) )
 import Engine
+
+initDB :: IO ()
+initDB = do
+    conn <- open "history.db"
+    execute_ conn "CREATE TABLE IF NOT EXISTS history (target_url TEXT PRIMARY KEY, scan_date TEXT, report_json TEXT)"
+    close conn
+
+saveToHistory :: String -> String -> IO ()
+saveToHistory targetUrl jsonReport = do
+    conn <- open "history.db"
+    currentTime <- show <$> getCurrentTime
+    execute conn "INSERT OR REPLACE INTO history (target_url, scan_date, report_json) VALUES (?, ?, ?)" (targetUrl, currentTime, jsonReport)
+    close conn
+
+getHistory :: IO [(String, String)]
+getHistory = do
+    conn <- open "history.db"
+    rows <- query_ conn "SELECT target_url, scan_date FROM history ORDER BY scan_date DESC" :: IO [(String, String)]
+    close conn
+    return rows
 
 translateHeaderByteStringToText :: [(HeaderName, ByteString)] -> [(Text, Text)]
 translateHeaderByteStringToText = map (bimap (toLower . decodeUtf8 . original) decodeUtf8)
@@ -27,29 +54,46 @@ corsPolicy = cors (const $ Just policy)
             { corsRequestHeaders = ["Content-Type"] }
 
 main :: IO ()
-main = scotty 3000 $ do
-    middleware corsPolicy
+main = do
+    initDB
 
-    post "/analisador" $ do
-        receivedData <- jsonData
+    scotty 3000 $ do
 
-        let linkString = unpack $ url receivedData
+        middleware corsPolicy
 
-        requestRaw <- parseRequest linkString
+        post "/analisador" $ do
+            receivedData <- jsonData
 
-        let request = setRequestMethod "HEAD" requestRaw
+            let linkString = unpack $ url receivedData
 
-        result <- liftIO $ try (httpNoBody request) :: ActionM (Either SomeException (Response ()))
+            requestRaw <- parseRequest linkString
 
-        case result of
-            Left exception -> do
-                Scotty.status status500
-                let errorMessage = ErrorReport "Failure at communicating with target" (pack $ show exception)
-                json errorMessage
+            let request = setRequestMethod "HEAD" requestRaw
 
-            Right response -> do
-                let allHeaders = translateHeaderByteStringToText $ getResponseHeaders response
-                let analyzeHeaders = map (\header -> let value = lookup header allHeaders in evaluateHeader header value) securityHeaders
-                let finalReport = SecurityReport { results = analyzeHeaders}
+            result <- liftIO $ try (httpNoBody request) :: ActionM (Either SomeException (Response ()))
 
-                json finalReport
+            case result of
+                Left exception -> do
+                    Scotty.status status500
+                    let errorMessage = ErrorReport "Failure at communicating with target" (pack $ show exception)
+                    json errorMessage
+
+                Right response -> do
+                    let allHeaders = translateHeaderByteStringToText $ getResponseHeaders response
+                    let analyzeHeaders = map (\header -> let value = lookup header allHeaders in evaluateHeader header value) securityHeaders
+                    let finalReport = SecurityReport { results = analyzeHeaders}
+
+                    json finalReport
+
+        post "/api/history" $ do
+            payload <- jsonData :: ActionM HistoryPayload
+
+            let target = scannedURL payload
+            let reportData = report payload
+
+            liftIO $ saveToHistory target reportData
+            text "Saved successfully"
+
+        get "/api/history" $ do
+            historyList <- liftIO getHistory
+            json historyList
