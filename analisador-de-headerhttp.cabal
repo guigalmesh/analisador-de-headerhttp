@@ -80,7 +80,9 @@ executable analisador-de-headerhttp
         http-types,
         containers,
         wai-cors,
-        wai
+        wai,
+        sqlite-simple,
+        time
 
     ghc-options: -threaded
     -- Directories containing source files.
