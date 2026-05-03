@@ -145,8 +145,8 @@ Eu acho que ajuda muito, principalmente para escrever um projeto complexo em uma
 
 ## 9. Referências e créditos
 
-securityheaders.com
-https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
-https://owasp.org/www-community/Security_Headers
-https://hackage-content.haskell.org/package/scotty-0.30/docs/Web-Scotty.html
-https://hackage.haskell.org/package/aeson-2.2.3.0/docs/Data-Aeson.html
+securityheaders.com <br>
+https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html <br>
+https://owasp.org/www-community/Security_Headers <br>
+https://hackage-content.haskell.org/package/scotty-0.30/docs/Web-Scotty.html <br>
+https://hackage.haskell.org/package/aeson-2.2.3.0/docs/Data-Aeson.html <br>
