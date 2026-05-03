@@ -61,7 +61,7 @@ Rodar localmente:
 
 ## 6. Deploy
 
-Link do serviço publicado: <complete aqui>
+Link do serviço publicado: <https://headerreport.onrender.com/>
 
 Fiz o deploy pelo render.com mesmo. Ai fui usando a IA para ir configurando o arquivo Docker, foi muito complicado, devo ter tentado dar deploy umas 20 vezes.
 O deploy do back-end e front-end foram feitos separados, o back como web service e o front como static site.
@@ -71,9 +71,7 @@ O deploy do back-end e front-end foram feitos separados, o back como web service
 
 ## 7. Resultado final
 
-Apresente o resultado final do trabalho, na forma de GIF animado ou vídeo curto (máximo 60s)
-
-Você também pode acrescentar uma breve explicação sobre o que está sendo demonstrado.
+[Vídeo apresentando o site](apresentacao.gif)
 
 ---
 
