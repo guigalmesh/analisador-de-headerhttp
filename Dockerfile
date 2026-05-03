@@ -1,7 +1,7 @@
 # =========================================================
 # ETAPA 1: BUILDER (Compilação)
 # =========================================================
-FROM haskell:9.4 AS builder
+FROM haskell:9.4-slim AS builder
 
 # AVISO: Evita os avisos chatos do debconf (Readline) no log
 ENV DEBIAN_FRONTEND=noninteractive
