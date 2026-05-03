@@ -1,7 +1,7 @@
 # =========================================================
 # ETAPA 1: BUILDER (Compilação)
 # =========================================================
-FROM haskell:9.4 AS builder
+FROM haskell:9.4-slim AS builder
 
 # Instala a biblioteca de desenvolvimento do SQLite necessária para compilar o sqlite-simple
 RUN apt-get update && apt-get install -y libsqlite3-dev
