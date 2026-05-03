@@ -1,29 +1,31 @@
 # =========================================================
 # ETAPA 1: BUILDER (Compilação)
-# Usando a versão baseada no Debian 11 (Bullseye) para evitar erros 404
 # =========================================================
-FROM haskell:9.4-bullseye AS builder
+FROM haskell:9.4-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instala SQLite, zlib e pkg-config direto dos repositórios oficiais vivos
-RUN apt-get update && apt-get install -y libsqlite3-dev zlib1g-dev pkg-config
+# 1. Configura o repositório histórico (Buster) para evitar o Erro 404
+RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list && \
+    rm -rf /etc/apt/sources.list.d/* && \
+    echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/10no-check-valid-until
+
+# 2. A BALA DE PRATA: Removemos a biblioteca conflitante antes de instalar a nova!
+RUN apt-get update && \
+    apt-get remove -y libsqlite3-0 && \
+    apt-get install -y libsqlite3-dev zlib1g-dev pkg-config
 
 WORKDIR /app
 
-# 1. Copia o ficheiro .cabal
+# 3. Copia o .cabal e baixa as bibliotecas (Protegendo a memória do Render com -j1)
 COPY *.cabal ./
-
-# 2. Instala as dependências forçando 1 núcleo (-j1) para proteger a RAM do Render
 RUN cabal update && cabal build --dependencies-only -j1
 
-# 3. Copia o resto do código fonte
+# 4. Copia o resto do código e compila
 COPY . .
-
-# 4. Compila o projeto final usando 1 núcleo (-j1)
 RUN cabal build -j1
 
-# 5. Move o executável
+# 5. Salva o binário com nome padrão
 RUN cp $(cabal list-bin exe:analisador-de-headerhttp) /app/server-exe
 
 # =========================================================
@@ -33,6 +35,7 @@ FROM debian:bullseye-slim
 
 WORKDIR /app
 
+# Instala os pacotes necessários para a produção
 RUN apt-get update && \
     apt-get install -y libsqlite3-0 ca-certificates zlib1g && \
     rm -rf /var/lib/apt/lists/*
