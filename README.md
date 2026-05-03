@@ -51,7 +51,11 @@ Os testes fiz usando o HUnit, utilizei o prório chat do VScode usando o GPT-5 m
 
 ## 5. Execução
 
-Explique como executar o projeto, incluindo informações sobre dependências necessárias, comandos para compilar ou executar, etc.
+Rodar localmente:
+- GHC e Cabal
+- Dependências do OS no Debian: sudo apt install libsqlite3-dev zlib1g-dev pkg-config
+- Pro front-end, qualquer servidor HTTP simples
+- Para iniciar a API: cabal update -> cabal build -> cabal run
 
 ---
 
