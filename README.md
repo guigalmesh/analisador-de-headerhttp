@@ -63,7 +63,9 @@ Rodar localmente:
 
 Link do serviço publicado: <complete aqui>
 
-Descreva de forma breve como você realizou o deploy a partir da base e das orientações fornecidas. Caso não tenha conseguido, explique o que tentou.
+Fiz o deploy pelo render.com mesmo. Ai fui usando a IA para ir configurando o arquivo Docker, foi muito complicado, devo ter tentado dar deploy umas 20 vezes.
+O deploy do back-end e front-end foram feitos separados, o back como web service e o front como static site.
+
 
 ---
 
@@ -79,7 +81,7 @@ Você também pode acrescentar uma breve explicação sobre o que está sendo de
 
 ### 8.1 Ferramentas de IA utilizadas
 
-Liste as principais ferramentas de IA utilizadas, com suas versões/modelos/planos. Por exemplo, ChatGPT Free com GPT-5.2 Thinking, GitHub Copilot com Gemini 2.0 Flash, Antigravity com Claude Sonnet 4.6 (Thinking), etc.
+Utilizei o Gemini 3.1 Pro para maioria das coisas e o GPT-5 mini como agente para os testes.
 
 ---
 
@@ -90,81 +92,63 @@ Inclua **de 3 a 5 interações relevantes** com ferramentas de IA.
 
 #### Interação 1
 
-- **Objetivo da consulta:**
+- **Objetivo da consulta:** Manter apenas uma conversa com a IA para que ela tivesse o contexto e definir como eu queria a ajuda
 - **Trecho do prompt ou resumo fiel:**
-- **O que foi aproveitado:**
+"I'm making a project in Haskell. It's a header analyzer. It scans for the presence of security headers on a website (the user provides the URL). This is the chat where I'm going to ask questions about the project. My aim is to build it with the least AI help possible so I'm going to ask just especific questions. I do not want you to give me the answer directly, instead just point me in the right direction."
+- **O que foi aproveitado:** A IA perdeu o contexto rapidamente e começou a dar a resposta completa
 - **O que foi modificado ou descartado:**
 
 #### Interação 2
 
-- **Objetivo da consulta:**
+- **Objetivo da consulta:** Decidir se era melhor usar String ou Text
 - **Trecho do prompt ou resumo fiel:**
-- **O que foi aproveitado:**
+Pode me explicar de novo a diferença entre String e Text?
+- **O que foi aproveitado:** Decidi usar o Text já que ele é sequencial na memória e por isso seria melhor pro projeto
 - **O que foi modificado ou descartado:**
 
 #### Interação 3
 
-- **Objetivo da consulta:**
+- **Objetivo da consulta:** Entender como eu poderia analisar a configuração da header
 - **Trecho do prompt ou resumo fiel:**
-- **O que foi aproveitado:**
+"Mais perguntas: A presença de uma security header é uma coisa, mas há diferentes maneiras de configurá-la. Como seria fazer a análise da configuração da header (do valor)?"
+- **O que foi aproveitado:** Me baseei na função "auditarCabecalho" que foi retornado e manti basicamente o mesmo padrão só adicionei mais headers e mudei algumas formas de analisar
 - **O que foi modificado ou descartado:**
 
 #### Interação 4 (opcional)
 
-- **Objetivo da consulta:**
+- **Objetivo da consulta:** Melhorar a experiência do usuário quando inserindo o site
 - **Trecho do prompt ou resumo fiel:**
-- **O que foi aproveitado:**
+"No momento, eu preciso digitar o https:// sempre que for fazer uma busca. Não existe a opção de preencher automaticamente para o usuário caso ele digite apenas o link (facebook.com e não https://facebook.com). E como isso implicaria no funcionamento do código, já que muitos sites possuem redirecionamento quando acessado em protocolos diferentes?"
+- **O que foi aproveitado:** Eu pretendia fazer isso no back-end, mas o Gemini sugeriu deixar isso apenas no front-end já que é parte de UI/UX
 - **O que foi modificado ou descartado:**
 
 #### Interação 5 (opcional)
 
-- **Objetivo da consulta:**
+- **Objetivo da consulta:** Fiz várias perguntas enviando algum erro que o compilador tenha me dado, perguntando o que era e como consertar
 - **Trecho do prompt ou resumo fiel:**
-- **O que foi aproveitado:**
-- **O que foi modificado ou descartado:**
+[erro retornado pelo compilador]
+- **O que foi aproveitado:** Geralmente levava uns 2/3 prompts para a IA acertar o que estava de errado e corrigir
+- **O que foi modificado ou descartado:** Muitas vezes ela perdia o contexto e sugeria fixes que não faziam sentido no projeto
 
 ---
 
 ### 8.3 Exemplo de erro, limitação ou sugestão inadequada da IA
 
-Descreva **ao menos um caso** em que a IA:
-
-- errou
-- foi incompleta
-- sugeriu algo inadequado ou incompreensível
-- produziu código que precisou de correção relevante
-
-Explique brevemente o que aconteceu e como você percebeu ou corrigiu o problema.
+- Muitos erros aconteceram quando estava fazendo o front-end. Principalmente por que como eu não estava usando agente nem nenhum tipo de arquivo de configuração ele perdia o contexto e não deixava o projeto padronizado (principalmente no HTML que ficava muito bagunçado), a maior parte da padronização tive que fazer na mão.
+- Ao usar um agente para implementar os testes, ele errou muitas vezes e passou +/- uns 15 minutos em loop testando e fazendo alterações no meu código, também alterando coisas que eu não pedi, dividindo os arquivos e no fim ainda não fez uma cobertura 100% com testes.
 
 ---
 
 ### 8.4 Comentário pessoal sobre o processo envolvendo IA
 
-Escreva um breve comentário pessoal sobre o processo envolvendo IA.
-
-Você pode comentar, por exemplo:
-
-- algo que passou a compreender melhor
-- uma dificuldade que conseguiu superar
-- uma limitação que ainda sente
-- como o uso de IA ajudou ou atrapalhou em certos momentos.
+Eu acho que ajuda muito, principalmente para escrever um projeto complexo em uma linguagem que não tenho muito conhecimento. O front-end fiz todo praticamente usando IA. Mas acho que afeta um pouco o entendimento e o código fica muito bagunçado caso vá só copiando e colando o que a IA entrega. Mas consegui compreender melhor questões sobre a usabilidade do site. Mas atrapalha quando o projeto fica tão complexo que é díficil fazer alterações sem pedir para a IA.
 
 ---
 
 ## 9. Referências e créditos
 
-Liste referências e créditos de forma detalhada, com título e URL, incluindo, quando aplicável:
-
-- sites consultados
-- documentações
-- materiais de aula
-- colegas
-- trechos de código adaptados
-- imagens, vídeos
-
-Exemplo:
-
-- Documentação do Scotty: ...
-- Documentação do Render: ...
-- Material de aula da disciplina: ...
-- Vídeo sobre Scotty: ...
+securityheaders.com
+https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
+https://owasp.org/www-community/Security_Headers
+https://hackage-content.haskell.org/package/scotty-0.30/docs/Web-Scotty.html
+https://hackage.haskell.org/package/aeson-2.2.3.0/docs/Data-Aeson.html

@@ -36,7 +36,7 @@ corsPolicy :: Middleware
 corsPolicy = cors (const $ Just policy)
     where
         policy = simpleCorsResourcePolicy
-            { corsOrigins = Just (["https://headereport.onrender.com"], True)
+            { corsOrigins = Just (["https://headerreport.onrender.com"], True)
             , corsRequestHeaders = ["Content-Type"] }
 
 main :: IO ()
