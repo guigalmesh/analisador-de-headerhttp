@@ -31,6 +31,8 @@ Já existe um um site que faz isso bem melhor (securityheaders.com) mas eu queri
 
 Comecei querendo fazer algo relacionado a cibersegurança, por que estou estudando o tema. Um tempo atrás tinha visto esse site e achei interessante.
 Comecei tentando fazer o primeiro endpoint que recebia uma URL e fazia uma requisição, devolvendo um JSON estruturado com todos os cabeçalhos do site, e ai fui refinando isso para a requisição ser apenas do cabeçalho ("HEAD"), filtrar apenas os cabeçalhos interessantes e separar entre pares de chave e valor.
+Depois me deparei com um problema: apenas avaliar a presença ou ausência de cabeçalhos não era o suficiente para fazer muita coisa. Por exemplo, algum cabeçalho podia estar presente mas mal configurado, alguns cabeçalhos mais novos "sobreescrevem" cabeçalhos antigos, o recomendado para outros é que eles estejam ausentes, entre outras coisas.
+Então comecei a escrever um motor de regras para conseguir resolver esse problema, onde faço uma análise
 Comente o processo de desenvolvimento do trabalho, com evidências de compreensão e de construção incremental.
 
 Procure incluir, quando aplicável:
