@@ -31,41 +31,21 @@ Já existe um um site que faz isso bem melhor (securityheaders.com) mas eu queri
 
 Comecei querendo fazer algo relacionado a cibersegurança, por que estou estudando o tema. Um tempo atrás tinha visto esse site e achei interessante.
 Comecei tentando fazer o primeiro endpoint que recebia uma URL e fazia uma requisição, devolvendo um JSON estruturado com todos os cabeçalhos do site, e ai fui refinando isso para a requisição ser apenas do cabeçalho ("HEAD"), filtrar apenas os cabeçalhos interessantes e separar entre pares de chave e valor.
+
 Depois me deparei com um problema: apenas avaliar a presença ou ausência de cabeçalhos não era o suficiente para fazer muita coisa. Por exemplo, algum cabeçalho podia estar presente mas mal configurado, alguns cabeçalhos mais novos "sobreescrevem" cabeçalhos antigos, o recomendado para outros é que eles estejam ausentes, entre outras coisas.
-Então comecei a escrever um motor de regras para conseguir resolver esse problema, onde faço uma análise
-Comente o processo de desenvolvimento do trabalho, com evidências de compreensão e de construção incremental.
+Então comecei a escrever um motor de regras para conseguir resolver esse problema, onde faço uma análise para cada cabeçalho e escrevo se é vulnerável ou não. Cada cabeçalho é considerado "Critical", "Recommended" ou "Other", dependendo da sua importância. As descrições de cada header eu tirei do OWASP.
 
-Procure incluir, quando aplicável:
+Depois comecei a fazer o banco de dados, não foi muito complicado, escolhi salvar apenas um resumo da análise e não o JSON inteiro. Criei outros 2 endpoints para o banco de dados, um post e um get. Uma escolha de implementação também foi manter apenas uma análise por site, sempre que uma análise é feita de um mesmo site, é sobreescrito no banco de dados.
 
-- como a ideia inicial evoluiu
-- decisões tomadas ao longo do desenvolvimento
-- erros encontrados
-- dificuldades específicas enfrentadas
-- tentativas de solução
-- mudanças de rumo
-- comentários pessoais sobre o que você compreendeu no processo e sobre questões que ainda persistem
-- como você separou a lógica do serviço da parte ligada ao Scotty
-- quais funções puras e estruturas de dados foram importantes no trabalho
-- quais aspectos de programação funcional apareceram no desenvolvimento
+Uma parte difícil foi criar o ranking para cada site. Eu decidi fazer a avaliação no front-end, dando nota de A à F para cada site, o problema foi que de início todos os sites recebiam F. Isso acredito que se dá por várias razões, a principal é que ninguém confia apenas nos headers de segurança, as aplicações costumam usar defesa por profundidade, o que significa que mesmo que um header esteja ausente ou tenha configurações "frouxas", isso não expõe diretamente a vulnerabilidades. Também tem outros motivos como compatibilidade, especificidades de implementação, etc.
 
-Este não é um espaço para escrever algo como "foi difícil mas superei as dificuldades". O objetivo é mostrar sinais reais de desenvolvimento, reflexão, aprendizado e resolução de problemas.
-
-Se o desenvolvimento não conseguir atingir todos os objetivos e requisitos, essa seção é muito importante para mostrar o que você tentou.
+Deixei os testes por último, foi a única coisa para qual eu usei um agente, o que eu acho que foi um erro por que ele acabou alterando muita coisa que eu não pedi, tipo criando um novo arquivo .hs só para o banco de dados, que estava no Main.hs. Resolvi fazer assim por que vi um vídeo do Uncle Bob falando que uma das melhores aplicações da IA é justamente conseguir fazer esses testes de forma mais fácil.
 
 ---
 
 ## 4. Testes
 
-Descreva brevemente como você lidou com os testes unitários das funções que implementam a lógica do serviço, independentemente do Scotty.
-
-Inclua, se necessário:
-
-- quais funções puras foram testadas;
-- como os testes foram organizados;
-- se você usou HUnit ou outro modo simples de teste;
-- exemplos curtos do que foi verificado.
-
-Lembre que não se trata de testar se o serviço funciona pela web, mas sim de testar as funções puras que implementam a lógica.
+Os testes fiz usando o HUnit, utilizei o prório chat do VScode usando o GPT-5 mini Medium como agente. Primeiro usei o modo de planejamento e depois pedi pra ele fazer um test-suite que englobasse minhas funções puras e meu banco de dados, ele acabou fazendo muita bagunça e mudando coisas que eu não pedi. Também surgiram alguns erros no meu código que não estavam lá antes. E ele não testou todas as funções também como eu pedi. Organizei tudo em outra pasta na root chamada test com um arquivo só pra ele (Spec.hs)
 
 ---
 

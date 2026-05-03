@@ -5,13 +5,17 @@ FROM haskell:9.4-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 1. Sobrescreve a lista principal, MATA a pasta de listas extras e desativa a checagem de data
+# 1. Configura o repositório histórico e limpa os mortos
 RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list && \
     rm -rf /etc/apt/sources.list.d/* && \
     echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/10no-check-valid-until
 
-# 2. Agora sim, sem nenhum arquivo fantasma atrapalhando, o update vai funcionar
-RUN apt-get update && apt-get install -y libsqlite3-dev zlib1g-dev pkg-config
+# 2. A MÁGICA AQUI: Forçamos o downgrade do libsqlite3-0 para a versão exata do repositório
+RUN apt-get update && apt-get install -y --allow-downgrades \
+    libsqlite3-0=3.27.2-3+deb10u1 \
+    libsqlite3-dev \
+    zlib1g-dev \
+    pkg-config
 
 WORKDIR /app
 
@@ -20,6 +24,8 @@ COPY *.cabal ./
 
 # 2. Instala as dependências forçando 1 núcleo (-j1)
 RUN cabal update && cabal build --dependencies-only -j1
+
+# ... [O RESTO DO SEU DOCKERFILE CONTINUA EXATAMENTE IGUAL AQUI PARA BAIXO] ...
 
 # 3. Copia o resto do código fonte
 COPY . .
