@@ -23,10 +23,14 @@ O tema foi criar um serviço web que receba uma URL e faça uma requisição ped
 O objetivo desse site é auxiliar no mapeamento da superfície de defesa de aplicações web.
 A permanência de dados foi feita usando o banco de dados sqlite, para salvar o URL do site, um sumário da análise, uma nota e a data da análise. O back-end também retorna um ranking com os sites mais bem avaliados no topo.
 
+Já existe um um site que faz isso bem melhor (securityheaders.com) mas eu queria implementar algumas coisas diferentes, mas acabei não tendo tempo para diferenciar muito.
+
 ---
 
 ## 3. Processo de desenvolvimento
 
+Comecei querendo fazer algo relacionado a cibersegurança, por que estou estudando o tema. Um tempo atrás tinha visto esse site e achei interessante.
+Comecei tentando fazer o primeiro endpoint que recebia uma URL e fazia uma requisição, devolvendo um JSON estruturado com todos os cabeçalhos do site, e ai fui refinando isso para a requisição ser apenas do cabeçalho ("HEAD"), filtrar apenas os cabeçalhos interessantes e separar entre pares de chave e valor.
 Comente o processo de desenvolvimento do trabalho, com evidências de compreensão e de construção incremental.
 
 Procure incluir, quando aplicável:

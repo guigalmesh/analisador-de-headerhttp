@@ -3,10 +3,13 @@
 # =========================================================
 FROM haskell:9.4-slim AS builder
 
-# AVISO: Evita os avisos chatos do debconf (Readline) no log
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instala SQLite, zlib e pkg-config (Vitais para o servidor Scotty/Warp)
+# 1. Redireciona o apt-get para o Arquivo Histórico do Debian e desativa a checagem de data
+RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list && \
+    echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/10no-check-valid-until
+
+# 2. Agora o update e a instalação vão funcionar perfeitamente!
 RUN apt-get update && apt-get install -y libsqlite3-dev zlib1g-dev pkg-config
 
 WORKDIR /app
@@ -14,8 +17,10 @@ WORKDIR /app
 # 1. Copia o ficheiro .cabal
 COPY *.cabal ./
 
-# 2. Instala as dependências forçando 1 núcleo (-j1) para não estourar a RAM do Render
+# 2. Instala as dependências forçando 1 núcleo (-j1)
 RUN cabal update && cabal build --dependencies-only -j1
+
+# ... [O RESTO DO SEU DOCKERFILE CONTINUA EXATAMENTE IGUAL AQUI PARA BAIXO] ...
 
 # 3. Copia o resto do código fonte
 COPY . .
