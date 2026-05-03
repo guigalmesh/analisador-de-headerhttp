@@ -45,6 +45,13 @@ getHistory = do
     close conn
     return rows
 
+getRanking :: IO [(String, String, String)]
+getRanking = do
+    conn <- open "history.db"
+    rows <- query_ conn "SELECT targetUrl, grade, scan_date FROM history GROUP BY targetUrl ORDER BY grade ASC, scan_date DESC"
+    close conn
+    return rows
+
 translateHeaderByteStringToText :: [(HeaderName, ByteString)] -> [(Text, Text)]
 translateHeaderByteStringToText = map (bimap (toLower . decodeUtf8 . original) decodeUtf8)
 
@@ -99,3 +106,7 @@ main = do
         get "/api/history" $ do
             historyList <- liftIO getHistory
             json historyList
+
+        get "/api/ranking" $ do
+            rows <- liftIO getRanking
+            json rows
