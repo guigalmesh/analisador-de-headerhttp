@@ -7,6 +7,7 @@ module Main
     ) where
 
 import DBHelper (initDB, saveToHistory, getHistory, getRanking)
+import System.Environment (lookupEnv)
 import Web.Scotty(scotty, post, jsonData, json, ActionM, middleware, text, get)
 import qualified Web.Scotty as Scotty
 import Data.Text (Text, unpack, toLower, pack)
@@ -19,7 +20,7 @@ import Data.ByteString(ByteString)
 import Data.Bifunctor
 import Control.Exception(try, SomeException)
 import Network.HTTP.Types.Status(status500)
-import Network.Wai.Middleware.Cors(cors, simpleCorsResourcePolicy, corsRequestHeaders)
+import Network.Wai.Middleware.Cors(cors, simpleCorsResourcePolicy, corsRequestHeaders, corsOrigins)
 import Network.Wai (Middleware)
 import Types
     ( ErrorReport(ErrorReport),
@@ -35,13 +36,20 @@ corsPolicy :: Middleware
 corsPolicy = cors (const $ Just policy)
     where
         policy = simpleCorsResourcePolicy
-            { corsRequestHeaders = ["Content-Type"] }
+            { corsOrigins = Just (["https://headereport.onrender.com"], True)
+            , corsRequestHeaders = ["Content-Type"] }
 
 main :: IO ()
 main = do
     initDB
 
-    scotty 3000 $ do
+    portStr <- lookupEnv "PORT"
+
+    let porta = case portStr of
+            Just p -> read p
+            Nothing -> 3000
+
+    scotty porta $ do
 
         middleware corsPolicy
 
