@@ -21,26 +21,27 @@ import Types
     ( ErrorReport(ErrorReport),
       SecurityReport(SecurityReport, results),
       TargetURL(url),
-      HistoryPayload(scannedURL, report) )
+      HistoryPayload(scannedURL, grade, summary) )
 import Engine
 
 initDB :: IO ()
 initDB = do
     conn <- open "history.db"
-    execute_ conn "CREATE TABLE IF NOT EXISTS history (target_url TEXT PRIMARY KEY, scan_date TEXT, report_json TEXT)"
+    execute_ conn "CREATE TABLE IF NOT EXISTS history (targetUrl TEXT PRIMARY KEY, scan_date TEXT, grade TEXT, summary TEXT)"
     close conn
 
-saveToHistory :: String -> String -> IO ()
-saveToHistory targetUrl jsonReport = do
+saveToHistory :: String -> String -> String -> IO ()
+saveToHistory targetUrl gradeVal summaryVal = do
     conn <- open "history.db"
     currentTime <- show <$> getCurrentTime
-    execute conn "INSERT OR REPLACE INTO history (target_url, scan_date, report_json) VALUES (?, ?, ?)" (targetUrl, currentTime, jsonReport)
+    execute conn "INSERT OR REPLACE INTO history (targetUrl, scan_date, grade, summary) VALUES (?, ?, ?, ?)"
+        (targetUrl, currentTime, gradeVal, summaryVal)
     close conn
 
-getHistory :: IO [(String, String)]
+getHistory :: IO [(String, String, String, String)]
 getHistory = do
     conn <- open "history.db"
-    rows <- query_ conn "SELECT target_url, scan_date FROM history ORDER BY scan_date DESC" :: IO [(String, String)]
+    rows <- query_ conn "SELECT targetUrl, scan_date, grade, summary FROM history ORDER BY scan_date DESC" :: IO [(String, String, String, String)]
     close conn
     return rows
 
@@ -89,9 +90,10 @@ main = do
             payload <- jsonData :: ActionM HistoryPayload
 
             let target = scannedURL payload
-            let reportData = report payload
+            let gradeData = grade payload
+            let summaryData = summary payload
 
-            liftIO $ saveToHistory target reportData
+            liftIO $ saveToHistory target gradeData summaryData
             text "Saved successfully"
 
         get "/api/history" $ do

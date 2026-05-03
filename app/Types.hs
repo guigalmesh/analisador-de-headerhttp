@@ -54,6 +54,7 @@ instance ToJSON ErrorReport
 
 data HistoryPayload = HistoryPayload
     { scannedURL :: String
-    , report :: String
+    , grade :: String
+    , summary :: String
     } deriving (Show, Generic)
 instance FromJSON HistoryPayload

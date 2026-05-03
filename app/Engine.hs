@@ -6,7 +6,8 @@ module Engine
     ) where
 
 import Types
-import Data.Text(Text, isInfixOf, toLower)
+import Data.Text(Text, isInfixOf, toLower, words)
+import qualified Data.Text as T
 
 securityHeaders :: [Text]
 securityHeaders =
@@ -53,11 +54,30 @@ evaluateHeader name mValue = case name of
         , foundValue = mValue
         , status = case mValue of
             Nothing -> Missing
-            Just val
-                | "unsafe-inline" `isInfixOf` toLower val -> Vulnerable
-                | "unsafe-eval"   `isInfixOf` toLower val -> Vulnerable
-                | "*"             `isInfixOf` val         -> Vulnerable
-                | otherwise                               -> Secure
+            Just val ->
+                let
+                    valLower = T.toLower val
+                    directives = T.splitOn ";" valLower
+
+                    hasSubstring kw = any (\d -> kw `T.isInfixOf` d)
+                    hasExactToken token = any (\d -> token `elem` T.words d)
+
+                    scriptDirs  = filter (\d -> "script-src" `T.isInfixOf` d) directives
+                    defaultDirs = filter (\d -> "default-src" `T.isInfixOf` d) directives
+
+                    scriptMissing = null scriptDirs
+
+                    isXssVuln = hasSubstring "unsafe-inline" scriptDirs ||
+                        (scriptMissing && hasSubstring "unsafe-inline" defaultDirs)
+
+                    hasBareAsterisk = hasExactToken "*" directives
+
+                    isGlobalVuln = hasBareAsterisk || hasSubstring "unsafe-eval" directives
+                in
+                    if isXssVuln || isGlobalVuln
+                        then Vulnerable
+                        else Secure
+
         }
 
     "x-frame-options" -> HeaderAnalysis
